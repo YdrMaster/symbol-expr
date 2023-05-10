@@ -1,0 +1,19 @@
+integer    = @{ ASCII_NONZERO_DIGIT ~ ASCII_DIGIT* }
+identifier = @{ ("_" | ASCII_ALPHA) ~ ("_" | ASCII_ALPHANUMERIC)* }
+
+unary   = { "-" }
+prod_op = { "*" | "/" | "%" }
+sum_op  = { "+" | "-" }
+
+getter     = { identifier ~ "[" ~ algebra ~ "]" }
+unit_expr  = { integer | identifier | getter | "(" ~ algebra ~ ")" }
+unary_expr = { unary* ~ unit_expr }
+prod_expr  = { unary_expr ~ (prod_op ~ unary_expr)* }
+sum_expr   = { prod_expr ~ (sum_op ~ prod_expr)* }
+algebra    = { sum_expr }
+
+generator = { "[" ~ "|" ~ "i" ~ "|" ~ algebra ~ ";" ~ algebra ~ "]" }
+array     = { "[" ~ algebra? ~ ("," ~ algebra)* ~ ","? ~ "]" }
+list      = { generator | array }
+
+WHITESPACE = _{ " " | NEWLINE }
