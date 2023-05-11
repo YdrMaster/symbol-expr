@@ -1,10 +1,10 @@
-﻿use super::{Algebra, Rule};
+﻿use super::{unary::UnaryExpr, Algebra, Rule, ToAlgebra};
 use pest::iterators::Pair;
 
 #[derive(Clone, Debug)]
 pub(super) enum UnitExpr {
     Integer(Integer),
-    Identifier(VarName),
+    Variable(VarName),
     Getter(Getter),
     Algebra(Algebra),
 }
@@ -16,7 +16,7 @@ impl From<Pair<'_, Rule>> for UnitExpr {
         assert_eq!(pair.next(), None);
         match unit.as_rule() {
             Rule::integer => Self::Integer(unit.into()),
-            Rule::var_name => Self::Identifier(unit.into()),
+            Rule::var_name => Self::Variable(unit.into()),
             Rule::getter => Self::Getter(unit.into()),
             Rule::algebra => Self::Algebra(unit.into()),
             _ => unreachable!(),
@@ -24,8 +24,38 @@ impl From<Pair<'_, Rule>> for UnitExpr {
     }
 }
 
+impl From<Integer> for UnitExpr {
+    fn from(value: Integer) -> Self {
+        Self::Integer(value)
+    }
+}
+
+impl From<VarName> for UnitExpr {
+    fn from(value: VarName) -> Self {
+        Self::Variable(value)
+    }
+}
+
+impl From<Getter> for UnitExpr {
+    fn from(value: Getter) -> Self {
+        Self::Getter(value)
+    }
+}
+
+impl From<Algebra> for UnitExpr {
+    fn from(value: Algebra) -> Self {
+        Self::Algebra(value)
+    }
+}
+
+impl ToAlgebra for UnitExpr {
+    fn to_algebra(self) -> super::Algebra {
+        UnaryExpr::from(self).to_algebra()
+    }
+}
+
 #[derive(Clone, Copy, Default, Debug)]
-pub(super) struct Integer(i64);
+pub struct Integer(i64);
 
 impl From<Pair<'_, Rule>> for Integer {
     fn from(value: Pair<'_, Rule>) -> Self {
@@ -34,7 +64,7 @@ impl From<Pair<'_, Rule>> for Integer {
 }
 
 #[derive(Clone, Debug)]
-pub(super) struct VarName(String);
+pub struct VarName(String);
 
 impl From<Pair<'_, Rule>> for VarName {
     fn from(value: Pair<'_, Rule>) -> Self {
@@ -43,7 +73,7 @@ impl From<Pair<'_, Rule>> for VarName {
 }
 
 #[derive(Clone, Debug)]
-pub(super) struct ListName(String);
+pub struct ListName(String);
 
 impl From<Pair<'_, Rule>> for ListName {
     fn from(value: Pair<'_, Rule>) -> Self {

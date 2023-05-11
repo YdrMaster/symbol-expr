@@ -1,4 +1,4 @@
-﻿use super::{unary::UnaryExpr, Rule};
+﻿use super::{sum::SumExpr, unary::UnaryExpr, Rule, ToAlgebra};
 use pest::iterators::Pair;
 
 #[derive(Clone, Debug)]
@@ -41,5 +41,17 @@ impl From<Pair<'_, Rule>> for ProdExpr {
             }
         }
         Self(ans)
+    }
+}
+
+impl From<UnaryExpr> for ProdExpr {
+    fn from(value: UnaryExpr) -> Self {
+        Self(vec![(ProdOp::Mul, value)])
+    }
+}
+
+impl ToAlgebra for ProdExpr {
+    fn to_algebra(self) -> super::Algebra {
+        SumExpr::from(self).to_algebra()
     }
 }

@@ -1,4 +1,4 @@
-﻿use super::{product::ProdExpr, Rule};
+﻿use super::{product::ProdExpr, Rule, ToAlgebra};
 use pest::iterators::Pair;
 
 #[derive(Clone, Debug)]
@@ -39,5 +39,17 @@ impl From<Pair<'_, Rule>> for SumExpr {
             }
         }
         Self(ans)
+    }
+}
+
+impl From<ProdExpr> for SumExpr {
+    fn from(value: ProdExpr) -> Self {
+        Self(vec![(SumOp::Add, value)])
+    }
+}
+
+impl ToAlgebra for SumExpr {
+    fn to_algebra(self) -> super::Algebra {
+        self.into()
     }
 }
