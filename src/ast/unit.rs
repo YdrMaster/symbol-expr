@@ -1,4 +1,4 @@
-﻿use super::{unary::UnaryExpr, Algebra, IntoAlgebra, Rule};
+﻿use super::{unary::UnaryExpr, Algebra, IntoAlgebra, Rule, SymbolExpr};
 use pest::iterators::Pair;
 
 #[derive(Clone, Debug)]
@@ -48,6 +48,17 @@ impl ToString for UnitExpr {
             UnitExpr::Variable(n) => n.to_string(),
             UnitExpr::Getter { list, idx } => format!("{list}[{}]", idx.to_string()),
             UnitExpr::Algebra(a) => format!("({})", a.to_string()),
+        }
+    }
+}
+
+impl SymbolExpr for UnitExpr {
+    fn calculate(&self, repo: &impl super::ValueRepo) -> i64 {
+        match self {
+            UnitExpr::Integer(x) => *x,
+            UnitExpr::Variable(n) => repo.get_value(n),
+            UnitExpr::Getter { list, idx } => repo.index_value(list, idx.calculate(repo)),
+            UnitExpr::Algebra(a) => a.calculate(repo),
         }
     }
 }

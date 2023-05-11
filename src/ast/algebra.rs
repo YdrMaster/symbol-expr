@@ -1,4 +1,4 @@
-﻿use super::{sum::SumExpr, ExprParser, IntoAlgebra, Rule};
+﻿use super::{sum::SumExpr, ExprParser, IntoAlgebra, Rule, SymbolExpr, ValueRepo};
 use pest::{iterators::Pair, Parser};
 use std::str::FromStr;
 
@@ -42,5 +42,11 @@ impl IntoAlgebra for Algebra {
 impl ToString for Algebra {
     fn to_string(&self) -> String {
         self.0.to_string()
+    }
+}
+
+impl SymbolExpr for Algebra {
+    fn calculate(&self, repo: &impl ValueRepo) -> i64 {
+        self.0.calculate(repo)
     }
 }

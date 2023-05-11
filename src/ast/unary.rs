@@ -1,4 +1,4 @@
-﻿use super::{product::ProdExpr, unit::UnitExpr, IntoAlgebra, Rule};
+﻿use super::{product::ProdExpr, unit::UnitExpr, IntoAlgebra, Rule, SymbolExpr, ValueRepo};
 use pest::iterators::Pair;
 
 #[derive(Clone, Debug)]
@@ -63,5 +63,16 @@ impl ToString for UnaryExpr {
         }
         ans.push_str(&self.expr.to_string());
         ans
+    }
+}
+
+impl SymbolExpr for UnaryExpr {
+    fn calculate(&self, repo: &impl ValueRepo) -> i64 {
+        let abs = self.expr.calculate(repo);
+        if self.ops.len() % 2 == 0 {
+            abs
+        } else {
+            -abs
+        }
     }
 }

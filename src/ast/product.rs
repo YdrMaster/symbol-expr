@@ -1,4 +1,4 @@
-﻿use super::{sum::SumExpr, unary::UnaryExpr, IntoAlgebra, Rule};
+﻿use super::{sum::SumExpr, unary::UnaryExpr, IntoAlgebra, Rule, SymbolExpr, ValueRepo};
 use pest::iterators::Pair;
 
 #[derive(Clone, Debug)]
@@ -78,5 +78,15 @@ impl ToString for ProdExpr {
             ans.push_str(expr.to_string().as_str());
         }
         ans
+    }
+}
+
+impl SymbolExpr for ProdExpr {
+    fn calculate(&self, repo: &impl ValueRepo) -> i64 {
+        self.0.iter().fold(1i64, |prod, (op, expr)| match op {
+            ProdOp::Mul => prod * expr.calculate(repo),
+            ProdOp::Div => prod / expr.calculate(repo),
+            ProdOp::Mod => prod % expr.calculate(repo),
+        })
     }
 }
