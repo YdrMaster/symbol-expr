@@ -6,11 +6,38 @@ mod sum;
 mod unary;
 mod unit;
 
+use pest::Parser;
+use std::str::FromStr;
+
 pub use algebra::Algebra;
+pub use array::Array;
+pub use generator::Generator;
 
 #[derive(Parser)]
 #[grammar = "expr.pest"]
 struct ExprParser;
+
+pub enum SymbolObj {
+    Algebra(Algebra),
+    Generator(Generator),
+    Array(Array),
+}
+
+impl FromStr for SymbolObj {
+    type Err = ();
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        let mut pairs = ExprParser::parse(Rule::obj, s).unwrap();
+        let pair = pairs.next().unwrap();
+        assert_eq!(pairs.next(), None);
+        match pair.as_rule() {
+            Rule::algebra => Ok(Self::Algebra(pair.into())),
+            Rule::generator => Ok(Self::Generator(pair.into())),
+            Rule::array => Ok(Self::Array(pair.into())),
+            _ => unreachable!(),
+        }
+    }
+}
 
 pub trait IntoAlgebra {
     fn into_algebra(self) -> Algebra;
