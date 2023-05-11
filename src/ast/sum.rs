@@ -14,7 +14,7 @@ impl From<Pair<'_, Rule>> for SumExpr {
     fn from(value: Pair<Rule>) -> Self {
         let mut op = SumOp::Add;
         let mut ans = Vec::new();
-        let mut sum = value.into_inner().into_iter();
+        let mut sum = value.into_inner();
         if let Some(pair) = sum.next() {
             match pair.as_rule() {
                 Rule::prod_expr => ans.push((op, pair.into())),

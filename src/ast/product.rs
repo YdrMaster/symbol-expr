@@ -1,4 +1,4 @@
-﻿use super::{unary::UnaryExpr, Algebra, Rule};
+﻿use super::{unary::UnaryExpr, Rule};
 use pest::iterators::Pair;
 
 #[derive(Clone, Debug)]
@@ -15,7 +15,7 @@ impl From<Pair<'_, Rule>> for ProdExpr {
     fn from(value: Pair<Rule>) -> Self {
         let mut op = ProdOp::Mul;
         let mut ans = Vec::new();
-        let mut product = value.into_inner().into_iter();
+        let mut product = value.into_inner();
         if let Some(pair) = product.next() {
             match pair.as_rule() {
                 Rule::unary_expr => ans.push((op, pair.into())),
