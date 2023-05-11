@@ -10,18 +10,18 @@ pub use algebra::Algebra;
 #[grammar = "expr.pest"]
 struct ExprParser;
 
-pub trait ToAlgebra {
-    fn to_algebra(self) -> Algebra;
+pub trait IntoAlgebra {
+    fn into_algebra(self) -> Algebra;
 }
 
-impl ToAlgebra for i64 {
-    fn to_algebra(self) -> Algebra {
-        unit::UnitExpr::Integer(self).to_algebra()
+impl IntoAlgebra for i64 {
+    fn into_algebra(self) -> Algebra {
+        unit::UnitExpr::Integer(self).into_algebra()
     }
 }
 
-impl ToAlgebra for String {
-    fn to_algebra(self) -> Algebra {
-        unit::UnitExpr::Variable(self).to_algebra()
+impl IntoAlgebra for String {
+    fn into_algebra(self) -> Algebra {
+        unit::UnitExpr::Variable(self).into_algebra()
     }
 }

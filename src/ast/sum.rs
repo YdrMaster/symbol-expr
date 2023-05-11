@@ -1,4 +1,4 @@
-﻿use super::{product::ProdExpr, Rule, ToAlgebra};
+﻿use super::{product::ProdExpr, IntoAlgebra, Rule};
 use pest::iterators::Pair;
 
 #[derive(Clone, Debug)]
@@ -48,8 +48,32 @@ impl From<ProdExpr> for SumExpr {
     }
 }
 
-impl ToAlgebra for SumExpr {
-    fn to_algebra(self) -> super::Algebra {
+impl IntoAlgebra for SumExpr {
+    fn into_algebra(self) -> super::Algebra {
         self.into()
+    }
+}
+
+impl AsRef<str> for SumOp {
+    fn as_ref(&self) -> &str {
+        match self {
+            SumOp::Add => "+",
+            SumOp::Sub => "-",
+        }
+    }
+}
+
+impl ToString for SumExpr {
+    fn to_string(&self) -> String {
+        assert!(matches!(self.0.first().unwrap().0, SumOp::Add));
+        let mut ans = String::new();
+        ans.push_str(self.0[0].1.to_string().as_str());
+        for (op, expr) in &self.0[1..] {
+            ans.push(' ');
+            ans.push_str(op.as_ref());
+            ans.push(' ');
+            ans.push_str(expr.to_string().as_str());
+        }
+        ans
     }
 }

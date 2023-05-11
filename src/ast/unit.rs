@@ -1,4 +1,4 @@
-﻿use super::{unary::UnaryExpr, Algebra, Rule, ToAlgebra};
+﻿use super::{unary::UnaryExpr, Algebra, IntoAlgebra, Rule};
 use pest::iterators::Pair;
 
 #[derive(Clone, Debug)]
@@ -35,8 +35,19 @@ impl From<Pair<'_, Rule>> for UnitExpr {
     }
 }
 
-impl ToAlgebra for UnitExpr {
-    fn to_algebra(self) -> super::Algebra {
-        UnaryExpr::from(self).to_algebra()
+impl IntoAlgebra for UnitExpr {
+    fn into_algebra(self) -> super::Algebra {
+        UnaryExpr::from(self).into_algebra()
+    }
+}
+
+impl ToString for UnitExpr {
+    fn to_string(&self) -> String {
+        match self {
+            UnitExpr::Integer(x) => x.to_string(),
+            UnitExpr::Variable(n) => n.to_string(),
+            UnitExpr::Getter { list, idx } => format!("{list}[{}]", idx.to_string()),
+            UnitExpr::Algebra(a) => format!("({})", a.to_string()),
+        }
     }
 }

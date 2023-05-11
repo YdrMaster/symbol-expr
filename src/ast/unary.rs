@@ -1,4 +1,4 @@
-﻿use super::{product::ProdExpr, unit::UnitExpr, Rule, ToAlgebra};
+﻿use super::{product::ProdExpr, unit::UnitExpr, IntoAlgebra, Rule};
 use pest::iterators::Pair;
 
 #[derive(Clone, Debug)]
@@ -41,8 +41,27 @@ impl From<UnitExpr> for UnaryExpr {
     }
 }
 
-impl ToAlgebra for UnaryExpr {
-    fn to_algebra(self) -> super::Algebra {
-        ProdExpr::from(self).to_algebra()
+impl IntoAlgebra for UnaryExpr {
+    fn into_algebra(self) -> super::Algebra {
+        ProdExpr::from(self).into_algebra()
+    }
+}
+
+impl AsRef<str> for UnaryOp {
+    fn as_ref(&self) -> &str {
+        match self {
+            UnaryOp::Neg => "-",
+        }
+    }
+}
+
+impl ToString for UnaryExpr {
+    fn to_string(&self) -> String {
+        let mut ans = String::new();
+        for op in &self.ops {
+            ans.push_str(op.as_ref())
+        }
+        ans.push_str(&self.expr.to_string());
+        ans
     }
 }

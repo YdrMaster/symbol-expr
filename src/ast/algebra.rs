@@ -1,4 +1,4 @@
-﻿use super::{sum::SumExpr, ExprParser, Rule, ToAlgebra};
+﻿use super::{sum::SumExpr, ExprParser, IntoAlgebra, Rule};
 use pest::{iterators::Pair, Parser};
 use std::str::FromStr;
 
@@ -33,8 +33,14 @@ impl From<SumExpr> for Algebra {
     }
 }
 
-impl ToAlgebra for Algebra {
-    fn to_algebra(self) -> Algebra {
+impl IntoAlgebra for Algebra {
+    fn into_algebra(self) -> Algebra {
         self
+    }
+}
+
+impl ToString for Algebra {
+    fn to_string(&self) -> String {
+        self.0.to_string()
     }
 }
