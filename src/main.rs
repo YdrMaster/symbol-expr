@@ -7,6 +7,6 @@ extern crate pest_derive;
 use ast::SymbolObj;
 
 fn main() {
-    let algebra = "1+2*3/4%(a_+B*_c/d0)".parse::<SymbolObj>();
-    // println!("{}", algebra.unwrap().to_string());
+    let algebra = "[1,2,3]".parse::<SymbolObj>();
+    println!("{}", algebra.unwrap().to_string());
 }
