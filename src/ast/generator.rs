@@ -1,4 +1,4 @@
-﻿use super::{Algebra, Rule};
+﻿use super::{Algebra, Rule, SymbolExpr, SymbolList};
 use pest::iterators::Pair;
 
 #[derive(Clone, Debug)]
@@ -25,5 +25,11 @@ impl From<Pair<'_, Rule>> for Generator {
 impl ToString for Generator {
     fn to_string(&self) -> String {
         format!("[{} -> {}]", self.variable, self.func.to_string())
+    }
+}
+
+impl SymbolList for Generator {
+    fn get_symbol(&self, idx: usize) -> Algebra {
+        self.func.substitute(&self.variable, idx as _)
     }
 }

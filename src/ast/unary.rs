@@ -67,6 +67,13 @@ impl ToString for UnaryExpr {
 }
 
 impl SymbolExpr for UnaryExpr {
+    fn substitute(&self, name: &str, val: i64) -> Self {
+        Self {
+            ops: self.ops.clone(),
+            expr: self.expr.substitute(name, val),
+        }
+    }
+
     fn calculate(&self, repo: &impl ValueRepo) -> i64 {
         let abs = self.expr.calculate(repo);
         if self.ops.len() % 2 == 0 {

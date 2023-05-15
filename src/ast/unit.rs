@@ -53,6 +53,18 @@ impl ToString for UnitExpr {
 }
 
 impl SymbolExpr for UnitExpr {
+    fn substitute(&self, name: &str, val: i64) -> Self {
+        match self {
+            Self::Variable(n) if n == name => Self::Integer(val),
+            Self::Integer(_) | Self::Variable(_) => self.clone(),
+            Self::Getter { list, idx } => Self::Getter {
+                list: list.clone(),
+                idx: idx.substitute(name, val),
+            },
+            Self::Algebra(a) => Self::Algebra(a.substitute(name, val)),
+        }
+    }
+
     fn calculate(&self, repo: &impl super::ValueRepo) -> i64 {
         match self {
             UnitExpr::Integer(x) => *x,

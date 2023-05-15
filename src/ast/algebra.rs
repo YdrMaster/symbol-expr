@@ -33,6 +33,10 @@ impl ToString for Algebra {
 }
 
 impl SymbolExpr for Algebra {
+    fn substitute(&self, name: &str, val: i64) -> Self {
+        Self(self.0.substitute(name, val))
+    }
+
     fn calculate(&self, repo: &impl ValueRepo) -> i64 {
         self.0.calculate(repo)
     }

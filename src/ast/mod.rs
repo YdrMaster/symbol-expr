@@ -78,5 +78,10 @@ pub trait ValueRepo {
 }
 
 pub trait SymbolExpr {
+    fn substitute(&self, name: &str, val: i64) -> Self;
     fn calculate(&self, repo: &impl ValueRepo) -> i64;
+}
+
+pub trait SymbolList {
+    fn get_symbol(&self, index: usize) -> Algebra;
 }

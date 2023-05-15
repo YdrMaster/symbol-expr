@@ -1,4 +1,4 @@
-﻿use super::{Algebra, Rule};
+﻿use super::{Algebra, Rule, SymbolList};
 use pest::iterators::Pair;
 
 #[derive(Clone, Debug)]
@@ -28,5 +28,11 @@ impl ToString for Array {
         }
         ans.push(']');
         ans
+    }
+}
+
+impl SymbolList for Array {
+    fn get_symbol(&self, idx: usize) -> Algebra {
+        self.0.get(idx).cloned().unwrap()
     }
 }
