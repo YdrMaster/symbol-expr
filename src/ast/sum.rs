@@ -82,7 +82,7 @@ impl SymbolExpr for SumExpr {
     fn calculate(&self, repo: &impl ValueRepo) -> i64 {
         self.0.iter().fold(1i64, |sum, (op, expr)| match op {
             SumOp::Add => sum + expr.calculate(repo),
-            SumOp::Sub => sum + expr.calculate(repo),
+            SumOp::Sub => sum - expr.calculate(repo),
         })
     }
 }
