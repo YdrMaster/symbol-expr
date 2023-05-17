@@ -1,8 +1,27 @@
-﻿use super::{sum::SumExpr, IntoAlgebra, Rule, SymbolExpr, ValueRepo};
-use pest::iterators::Pair;
+﻿use super::{sum::SumExpr, ExprParser, IntoAlgebra, Rule, SymbolExpr, ValueRepo};
+use pest::{iterators::Pair, Parser};
+use std::str::FromStr;
 
 #[derive(Clone, Debug)]
 pub struct Algebra(SumExpr);
+
+impl FromStr for Algebra {
+    type Err = ();
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        let mut pairs = ExprParser::parse(Rule::algebra, s).unwrap();
+
+        let pair = pairs.next().unwrap();
+        assert!(matches!(pair.as_rule(), Rule::algebra));
+        assert_eq!(pairs.next(), None);
+
+        let pair = pair.into_inner().next().unwrap();
+        assert!(matches!(pair.as_rule(), Rule::sum_expr));
+        assert_eq!(pairs.next(), None);
+
+        Ok(Self(pair.into()))
+    }
+}
 
 impl From<Pair<'_, Rule>> for Algebra {
     fn from(value: Pair<'_, Rule>) -> Self {
